@@ -12,16 +12,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends SampleRobot {
 	RobotDrive myRobot = new RobotDrive(0, 1);
-	Joystick stick = new Joystick(0);
+	Joystick controller = new Joystick(0);
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
-	 	private SpeedController motor1;	// the motor to directly control with a joystick
+	 	private SpeedController motor1;	// the motor to directly control with a joycontroller
 	    private SpeedController motor2;
 	    private SpeedController motor3;
 	    private SpeedController motor4;
-	    private SpeedController motor5; // this is just to see if i can program the second joystick delete motors 5 6 7 if necessary //rainbrop//
+	    private SpeedController motor5; // this is just to see if i can program the second joycontroller delete motors 5 6 7 if necessary //rainbrop//
 	    private SpeedController motor6;
 	    private SpeedController motor7;
 	    private SpeedController motor8;
@@ -107,55 +107,55 @@ public class Robot extends SampleRobot {
 	public void operatorControl() {
 		myRobot.setSafetyEnabled(true);
 		while (isOperatorControl() && isEnabled()) {
-			myRobot.arcadeDrive(stick); // drive with arcade style (use right
-										// stick)
+			myRobot.arcadeDrive(controller); // drive with arcade style (use right
+										// controller)
 			Timer.delay(0.005); // wait for a motor update time
-			if (stick.getY() > DZ)  {
-				motor1.set(stick.getY()-DZ);
-				motor2.set(stick.getY()-DZ);
-				if (stick.getRawAxis(5) > DZ)  {
-					motor3.set(-(stick.getRawAxis(5)-DZ));
-				    motor4.set(-(stick.getRawAxis(5)-DZ));
+			if (controller.getY() > DZ)  {
+				motor1.set(controller.getY()-DZ);
+				motor2.set(controller.getY()-DZ);
+				if (controller.getRawAxis(5) > DZ)  {
+					motor3.set(-(controller.getRawAxis(5)-DZ));
+				    motor4.set(-(controller.getRawAxis(5)-DZ));
 				}else
-				if (stick.getRawAxis(5) < -DZ){
-					motor3.set(-(stick.getRawAxis(5)+DZ));
-				    motor4.set(-(stick.getRawAxis(5)+DZ));
+				if (controller.getRawAxis(5) < -DZ){
+					motor3.set(-(controller.getRawAxis(5)+DZ));
+				    motor4.set(-(controller.getRawAxis(5)+DZ));
 				}
 			}	else
-			if (stick.getY() < -DZ)  {
-				motor1.set(stick.getY()+DZ);
-				motor2.set(stick.getY()+DZ);
-				if (stick.getRawAxis(5) > DZ)  {
-					motor3.set(-(stick.getRawAxis(5)-DZ));
-					motor4.set(-(stick.getRawAxis(5)-DZ));
+			if (controller.getY() < -DZ)  {
+				motor1.set(controller.getY()+DZ);
+				motor2.set(controller.getY()+DZ);
+				if (controller.getRawAxis(5) > DZ)  {
+					motor3.set(-(controller.getRawAxis(5)-DZ));
+					motor4.set(-(controller.getRawAxis(5)-DZ));
 				}else
-					if (stick.getRawAxis(5) < -DZ){
-						motor3.set(-(stick.getRawAxis(5)+DZ));
-					    motor4.set(-(stick.getRawAxis(5)+DZ));
+					if (controller.getRawAxis(5) < -DZ){
+						motor3.set(-(controller.getRawAxis(5)+DZ));
+					    motor4.set(-(controller.getRawAxis(5)+DZ));
 					}else
-			if (stick.getRawAxis(5) < -DZ)  {
-				motor1.set(-(stick.getRawAxis(5)+DZ));
-				motor2.set(-(stick.getRawAxis(5)+DZ));
-				if (stick.getY() > DZ)  {
-					motor3.set((stick.getY()-DZ));
-					motor4.set((stick.getY()-DZ));
+			if (controller.getRawAxis(5) < -DZ)  {
+				motor1.set(-(controller.getRawAxis(5)+DZ));
+				motor2.set(-(controller.getRawAxis(5)+DZ));
+				if (controller.getY() > DZ)  {
+					motor3.set((controller.getY()-DZ));
+					motor4.set((controller.getY()-DZ));
 				}else
-					if (stick.getY() < -DZ){
-						motor3.set((stick.getY()+DZ));
-						motor4.set((stick.getY()+DZ));
+					if (controller.getY() < -DZ){
+						motor3.set((controller.getY()+DZ));
+						motor4.set((controller.getY()+DZ));
 					}else
-						if (stick.getRawAxis(5) > DZ)  {
-							motor1.set(-(stick.getRawAxis(5)+DZ));
-							motor2.set(-(stick.getRawAxis(5)+DZ));
-							if (stick.getY() > DZ)  {
-								motor3.set(-(stick.getRawAxis(5)-DZ));
-								motor4.set(-(stick.getRawAxis(5)-DZ));
+						if (controller.getRawAxis(5) > DZ)  {
+							motor1.set(-(controller.getRawAxis(5)+DZ));
+							motor2.set(-(controller.getRawAxis(5)+DZ));
+							if (controller.getY() > DZ)  {
+								motor3.set(-(controller.getRawAxis(5)-DZ));
+								motor4.set(-(controller.getRawAxis(5)-DZ));
 							}else
-								if (stick.getY() < -DZ){
-									motor3.set(-(stick.getY()+DZ));
-									motor4.set(-(stick.getY()+DZ));
+								if (controller.getY() < -DZ){
+									motor3.set(-(controller.getY()+DZ));
+									motor4.set(-(controller.getY()+DZ));
 								}else
-			if (stick.getRawButtonPressed(1)){
+			if (controller.getRawButtonPressed(1)){
 				motor1.set(.1);
 				motor2.set(.1);
 			}
