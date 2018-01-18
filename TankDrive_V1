@@ -177,26 +177,26 @@ public class Robot extends SampleRobot {
 					    motor4.set(-(stick.getRawAxis(5)+DZ));
 					}else
 			if (stick.getRawAxis(5) < -DZ)  {
-				motor1.set(-(stick.getRawAxis(5)+DZ));
-				motor2.set(-(stick.getRawAxis(5)+DZ));
+				motor3.set(-(stick.getRawAxis(5)+DZ));
+				motor4.set(-(stick.getRawAxis(5)+DZ));
 				if (stick.getY() > DZ)  {
-					motor3.set((stick.getY()-DZ));
-					motor4.set((stick.getY()-DZ));
+					motor1.set((stick.getY()-DZ));
+					motor2.set((stick.getY()-DZ));
 				}else
 					if (stick.getY() < -DZ){
-						motor3.set((stick.getY()+DZ));
-						motor4.set((stick.getY()+DZ));
+						motor1.set((stick.getY()+DZ));
+						motor2.set((stick.getY()+DZ));
 					}else
 						if (stick.getRawAxis(5) > DZ)  {
-							motor1.set(-(stick.getRawAxis(5)+DZ));
-							motor2.set(-(stick.getRawAxis(5)+DZ));
+							motor3.set(-(stick.getRawAxis(5)+DZ));
+							motor4.set(-(stick.getRawAxis(5)+DZ));
 							if (stick.getY() > DZ)  {
-								motor3.set(-(stick.getRawAxis(5)-DZ));
-								motor4.set(-(stick.getRawAxis(5)-DZ));
+								motor1.set(-(stick.getRawAxis(5)-DZ));
+								motor2.set(-(stick.getRawAxis(5)-DZ));
 							}else
 								if (stick.getY() < -DZ){
-									motor3.set(-(stick.getY()+DZ));
-									motor4.set(-(stick.getY()+DZ));
+									motor1.set(-(stick.getY()+DZ));
+									motor2.set(-(stick.getY()+DZ));
 								}else
 			if (stick.getRawButtonPressed(1)){
 				motor1.set(.1);
