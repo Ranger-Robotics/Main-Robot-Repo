@@ -35,7 +35,7 @@ public class Robot extends SampleRobot {
 	public Robot() {
 		myRobot.setExpiration(0.1);
 //starts the controller board
-	    motor1 = new Talon(0);
+	    motor1 = new Talon(0); //Motor 1 in the code is motor 0 on the pins
         motor2 = new Talon(1);
         motor3 = new Talon(2);
         motor4 = new Talon(3);
@@ -68,7 +68,7 @@ public class Robot extends SampleRobot {
 		//solenoid1.set(state);
 	}
 	
-	public void setAllMotors(float value) {
+	public void setAllMotors(double value) {
 		motor1.set(value);
 		motor2.set(value);
 		motor3.set(-value);
@@ -150,7 +150,7 @@ public class Robot extends SampleRobot {
 										// stick)
 			Timer.delay(0.005); // wait for a motor update time
 			
-			//The following jumble of if states just grabs the Y value off both joysticks
+			//The following jumble of if statements just grabs the Y value off both joysticks
 			//and then sets the motors to the right speed to match. I am not sure this works
 			//I am gonna try and go through it a bit later
 			if (stick.getY() > DZ)  {
@@ -164,19 +164,24 @@ public class Robot extends SampleRobot {
 					motor3.set(-(stick.getRawAxis(5)+DZ));
 				    motor4.set(-(stick.getRawAxis(5)+DZ));
 				}
-			}	else
-			if (stick.getY() < -DZ)  {
+				
+				
+				
+			}	else if (stick.getY() < -DZ)  {
 				motor1.set(stick.getY()+DZ);
 				motor2.set(stick.getY()+DZ);
 				if (stick.getRawAxis(5) > DZ)  {
 					motor3.set(-(stick.getRawAxis(5)-DZ));
 					motor4.set(-(stick.getRawAxis(5)-DZ));
-				}else
-					if (stick.getRawAxis(5) < -DZ){
-						motor3.set(-(stick.getRawAxis(5)+DZ));
-					    motor4.set(-(stick.getRawAxis(5)+DZ));
-					}else
-			if (stick.getRawAxis(5) < -DZ)  {
+				}else if (stick.getRawAxis(5) < -DZ){
+					motor3.set(-(stick.getRawAxis(5)+DZ));
+					motor4.set(-(stick.getRawAxis(5)+DZ));
+					}
+				
+				
+				
+				
+			}else if (stick.getRawAxis(5) < -DZ)  {
 				motor3.set(-(stick.getRawAxis(5)+DZ));
 				motor4.set(-(stick.getRawAxis(5)+DZ));
 				if (stick.getY() > DZ)  {
@@ -186,24 +191,28 @@ public class Robot extends SampleRobot {
 					if (stick.getY() < -DZ){
 						motor1.set((stick.getY()+DZ));
 						motor2.set((stick.getY()+DZ));
-					}else
-						if (stick.getRawAxis(5) > DZ)  {
-							motor3.set(-(stick.getRawAxis(5)+DZ));
-							motor4.set(-(stick.getRawAxis(5)+DZ));
-							if (stick.getY() > DZ)  {
-								motor1.set(-(stick.getRawAxis(5)-DZ));
-								motor2.set(-(stick.getRawAxis(5)-DZ));
-							}else
-								if (stick.getY() < -DZ){
-									motor1.set(-(stick.getY()+DZ));
-									motor2.set(-(stick.getY()+DZ));
-								}else
-			if (stick.getRawButtonPressed(1)){
-				motor1.set(.1);
-				motor2.set(.1);
-			} else if (stick.getRawButtonPressed(2)){
+					}
+						
+						
+			}else if (stick.getRawAxis(5) > DZ)  {
+				motor3.set(-(stick.getRawAxis(5)+DZ));
+				motor4.set(-(stick.getRawAxis(5)+DZ));
+				if (stick.getY() > DZ)  {
+					motor1.set(-(stick.getRawAxis(5)-DZ));
+					motor2.set(-(stick.getRawAxis(5)-DZ));
+				}else if (stick.getY() < -DZ){
+					motor1.set(-(stick.getY()+DZ));
+					motor2.set(-(stick.getY()+DZ));
+				}
+				
+				
+			}else if (stick.getRawButton(1)){
+				setAllMotors(0.2);
+			} else if (stick.getRawButton(2)){
 				//solenoid1.set(boolean); //Open or close the solenoid with true or false
 				//int currentSolenoidState = solenoid1.get();
+			} else if (stick.getRawButton(3)){
+				setAllMotors(0); //Just in case we need an emergency stop
 			}
 
 
@@ -211,9 +220,6 @@ public class Robot extends SampleRobot {
 			else { //If none of the above is true, set all motors to 0.
 					setAllMotors(0);
 			}
-		}
-	}
-}
 		}
 	}
 }
