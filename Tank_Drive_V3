@@ -100,7 +100,7 @@ public class Robot extends SampleRobot {
 			// Set the motor's output.
 			// This takes a number from -1 (100% speed in reverse) to +1 (100%
 			// speed going forward)
-			if (stick.getY() > DZ)  {
+			if (stick.getY() > DZ)  {//forward 
 				motor1.set(stick.getY()-DZ);
 				motor2.set(stick.getY()-DZ);
 				if (stick.getRawAxis(5) > DZ)  {
@@ -111,7 +111,7 @@ public class Robot extends SampleRobot {
 					motor3.set(-(stick.getRawAxis(5)+DZ));
 				    motor4.set(-(stick.getRawAxis(5)+DZ));
 				}
-			}	else if (stick.getY() < -DZ)  {
+			}	else if (stick.getY() < -DZ)  {//backward
 				motor1.set(stick.getY()+DZ);
 				motor2.set(stick.getY()+DZ);
 				if (stick.getRawAxis(5) > DZ)  {
@@ -121,7 +121,7 @@ public class Robot extends SampleRobot {
 					motor3.set(-(stick.getRawAxis(5)+DZ));
 					motor4.set(-(stick.getRawAxis(5)+DZ));
 					}
-			}else if (stick.getRawAxis(5) < -DZ)  {
+			}else if (stick.getRawAxis(5) < -DZ)  {//backward
 				motor3.set(-(stick.getRawAxis(5)+DZ));
 				motor4.set(-(stick.getRawAxis(5)+DZ));
 				if (stick.getY() > DZ)  {
@@ -134,7 +134,7 @@ public class Robot extends SampleRobot {
 					}
 						
 						
-			}else if (stick.getRawAxis(5) > DZ)  {
+			}else if (stick.getRawAxis(5) > DZ)  {//forward
 				motor3.set(-(stick.getRawAxis(5)+DZ));
 				motor4.set(-(stick.getRawAxis(5)+DZ));
 				if (stick.getY() > DZ)  {
