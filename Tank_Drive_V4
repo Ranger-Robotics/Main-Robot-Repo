@@ -105,13 +105,9 @@ public class Robot extends SampleRobot {
 		motor4.set(value);
 	}
 	
-	
-	public void autonomousInit() {
-		String gameData = DriverStation.getInstance().getGameSpecificMessage();
-	}
-	
 	public void autonomous() {
 
+		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		if(gameData.charAt(0) == 'L')
 		{
