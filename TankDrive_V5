@@ -38,8 +38,16 @@ public class Robot extends TimedRobot {
 		
 	}
 	
+	void turnRight() {
+		setLeft(0.3);
+		setRight(0.3);
+		Timer.delay(0.73);
+		setLeft(0);
+		setRight(0);
+	}
+	
 	void setLeft(double value) {
-		value = value * 0.9;
+		value = value * 0.846;
 		motor0.set(value);
 		motor1.set(value);
 	}
@@ -69,20 +77,15 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
-		if(gameData.charAt(0) == 'L')
-		{
-			double autoModeSpeed = 0.2;
+		if(gameData.charAt(0) == 'L') {
+			double autoModeSpeed = 0.3;
 			setLeft(autoModeSpeed);
 			setRight(-autoModeSpeed);
-			Timer.delay(4);
+			Timer.delay(4.44);
 			setLeft(0);
 			setRight(0);
-			Timer.delay(2);
-			setLeft(-autoModeSpeed);
-			setRight(autoModeSpeed);
-			Timer.delay(4);
-			setLeft(0);
-			setRight(0);
+			Timer.delay(1);
+			turnRight();
 		} else {
 			//Put right auto code here
 		}
