@@ -1,0 +1,12 @@
+If in left position:
+	1. Bot tries to go for our switch
+	2. Bot tries to go for scale
+	3. Bot just drives straight
+
+If in center position:
+	1. ?go straight?
+
+If in right position:
+	1. Bot tries to go for our switch
+	2. Bot tries to go for scale
+	3. Bot just drives straight
