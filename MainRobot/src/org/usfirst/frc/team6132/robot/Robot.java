@@ -9,9 +9,21 @@ package org.usfirst.frc.team6132.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Solenoid;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 
 
@@ -23,26 +35,67 @@ public class Robot extends TimedRobot {
 	private SpeedController motor2 = new Talon(2);
 	private SpeedController motor3 = new Talon(3);// Talon on channel 0
 	private SpeedController motor4 = new Talon(4);
-
+	private Servo servo1 = new Servo(9);
+	private Servo servo2 = new Servo(8);
 	private Joystick stick = new Joystick(0); // initialize the joystick on port
-	private Joystick stick2 = new Joystick(3);
+	//private Joystick stick2 = new Joystick(3);
 	Thread m_visionThread;// 0
 	double DZ = .1;
 	double SpeedModifier = 1;
 	double liftSpeedMod;
-	String startingPosition = "left";
+	double servo1Angle = 90;
+	double servo2Angle = 180;
+	String startingPosition = "right";
+	//Solenoid solenoid1 = new Solenoid(0);
+	boolean shouldGoSlow = false;
+	boolean shouldGoMedium = false;
 
 
 	@Override
 	public void robotInit() {
+		
+			m_visionThread = new Thread(() -> {
+				// Get the UsbCamera from CameraServer
+				UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+				// Set the resolution
+				camera.setResolution(640, 480);
 
+				// Get a CvSink. This will capture Mats from the camera
+				CvSink cvSink = CameraServer.getInstance().getVideo();
+				// Setup a CvSource. This will send images back to the Dashboard
+				CvSource outputStream
+						= CameraServer.getInstance().putVideo("Rectangle", 640, 480);
 
+				// Mats are very memory expensive. Lets reuse this Mat.
+				Mat mat = new Mat();
+
+				// This cannot be 'true'. The program will never exit if it is. This
+				// lets the robot stop this thread when restarting robot code or
+				// deploying.
+				while (!Thread.interrupted()) {
+					// Tell the CvSink to grab a frame from the camera and put it
+					// in the source mat.  If there is an error notify the output.
+					if (cvSink.grabFrame(mat) == 0) {
+						// Send the output the error.
+						outputStream.notifyError(cvSink.getError());
+						// skip the rest of the current iteration
+						continue;
+					}
+					// Put a rectangle on the image
+					Imgproc.rectangle(mat, new Point(100, 100), new Point(400, 400),
+							new Scalar(255, 255, 255), 5);
+					// Give the output stream a new image to display
+					outputStream.putFrame(mat);
+				}
+			});
+			m_visionThread.setDaemon(true);
+			m_visionThread.start();
 	}
 	
 	void turnLeft() {
 		setLeft(-0.3);
 		setRight(-0.3);
-		Timer.delay(0.73);
+		Timer.delay(0.9);
 		setLeft(0);
 		setRight(0);
 	}
@@ -76,7 +129,7 @@ public class Robot extends TimedRobot {
 	
 	void goForward(double time, double speed) {
 		setLeft(speed);
-		setRight(speed);
+		setRight(-speed);
 		Timer.delay(time);
 		setLeft(0);
 		setRight(0);
@@ -113,7 +166,7 @@ public class Robot extends TimedRobot {
 			if (ourSwitchPosition == 'R') {
 				
 				if (ScalePosition == 'L') { //If our switch is on the wrong side, try to go for the switch
-					goForward(4.44, 0.3); //Adjust timing to get to scale, this is set for switch
+					goForward(8.562857, 0.3); //Adjust timing to get to scale, this is set for switch
 					turnRight();
 				
 				} else if (ScalePosition == 'R') { //If both the switch and the scale are wrong, go straight
@@ -137,7 +190,7 @@ public class Robot extends TimedRobot {
 			
 			if (ourSwitchPosition == 'L') {
 				if (ScalePosition == 'R') {
-					goForward(4.44, 0.3);
+					goForward(8.562857, 0.3);
 					turnLeft();
 				}
 				
@@ -174,7 +227,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-
+		SpeedModifier = 1;
 	}
 
 
@@ -207,15 +260,84 @@ public class Robot extends TimedRobot {
 
 				setRight(0);
 			}
-
+			
+			/*
+			if (stick.getRawButton(1)) {
+				if (solenoid1.get()) {
+					solenoid1.set(false);
+				} else {
+					solenoid1.set(true);
+				}
+			}
+			*/
+			
 			if (stick.getRawButton(6)) {
-		    	SpeedModifier = 0.25 * SpeedModifier;
-			} else {
-				SpeedModifier = 1;
+				if (shouldGoSlow) {
+					shouldGoSlow = false;
+					System.out.println("Toggled slow mode to False");
+				} else {
+					shouldGoSlow = true;
+					System.out.println("Toggled slow mode to True");
+				}
+		    	Timer.delay(0.2);
+		    	if (stick.getRawButton(3) && stick.getRawButton(4)) {
+		    		turnRight();
+		    		turnLeft();
+		    		turnLeft();
+		    		turnRight();
+		    		turnRight();
+		    		turnLeft();
+		    		turnLeft();
+		    		turnRight();
+		    		
+		    		goForward(0.5, 0.3);
+		    		goForward(0.5, -0.3);
+		    		
+		    		turnRight();
+		    		turnLeft();
+		    		turnLeft();
+		    		turnRight();
+		    		turnRight();
+		    		turnLeft();
+		    		turnLeft();
+		    		turnRight();
+		    		
+		    	}
+			}
+			
+			if (stick.getRawButton(5)) {
+				if (shouldGoMedium)  {
+					shouldGoMedium = false;
+					System.out.println("Toggled Medium Mode To False");
+				} else {
+					shouldGoMedium = true;
+					System.out.println("Toggled Medium Mode To True");
+				}
+				Timer.delay(0.2);
+			}
+			
+			
+			if (shouldGoSlow) {
+				SpeedModifier = 0.25;
+			}
+			
+			if (shouldGoMedium) {
+				SpeedModifier = 0.5;
+			}
+			
+			if (shouldGoSlow && shouldGoMedium) {
+				SpeedModifier = 0.125;
+			}
+			
+			if (!shouldGoSlow) {
+				if (!shouldGoMedium) {
+					SpeedModifier = 1;
+				}
 			}
 
-			liftSpeedMod = stick2.getRawAxis(3);
+			//liftSpeedMod = stick2.getRawAxis(3);
 
+			/*
 			if (stick2.getRawAxis(1) < -0.2) {
 				setLift(stick2.getRawAxis(1));
 			}
@@ -223,6 +345,41 @@ public class Robot extends TimedRobot {
 			if (stick2.getRawAxis(1) > 0.2) {
 				setLift(stick2.getRawAxis(1));
 			}
+			*/
+			
+			if (stick.getPOV() == 180) {
+				servo1Angle = servo1Angle + 2.5;
+				Timer.delay(0.05);
+			}
+			if (stick.getPOV() == 0) {
+				servo1Angle = servo1Angle - 2.5;
+				Timer.delay(0.05);
+			}
+			
+			if (stick.getPOV() == 90) { //REMOVE THIS
+				servo2Angle = servo2Angle - 2.5;
+				Timer.delay(0.05);
+			}
+			
+			if (stick.getPOV() == 270) { //REMOVE THIS
+				servo2Angle = servo2Angle + 2.5;
+				Timer.delay(0.05);
+			}
+			
+			if (servo1Angle >= 179) {
+				servo1Angle = 178;
+			}
+			if (servo1Angle <= 1) {
+				servo1Angle = 2;
+			}
+			if (servo2Angle >= 359) {
+				servo2Angle = 358;
+			}
+			if (servo2Angle <= 1) {
+				servo2Angle = 2;
+			}
+			servo1.setAngle(servo1Angle);
+			servo2.setAngle(servo2Angle);
 	}
 
 
