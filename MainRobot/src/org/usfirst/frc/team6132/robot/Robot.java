@@ -50,7 +50,8 @@ public class Robot extends TimedRobot {
 
 	double servo2Angle = 180;
 	String startingPosition = "right";
-	//Solenoid solenoid1 = new Solenoid(0);
+	Solenoid solenoid0 = new Solenoid(0);
+	Solenoid solenoid1 = new Solenoid(1);
 	boolean shouldGoSlow = false;
 	boolean shouldGoMedium = false;
 
@@ -143,11 +144,23 @@ public class Robot extends TimedRobot {
 	void setLift(double value) {
 		motor4.set(value);
 	}
+	
+	void reportBotInfo() {
+		System.out.println("Bot Status Info");
+		System.out.println("====================");
+		System.out.println("Starting Position: " + startingPosition);
+	}
+	
+	void safePneumatics() {
+		solenoid0.set(false);
+		solenoid1.set(true);
+		System.out.println("The Pneumatics have been safed.");
+	}
 
 
 	@Override
 	public void disabledInit() {
-
+		reportBotInfo();
 	}
 
 	@Override
@@ -158,6 +171,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		reportBotInfo();
+		safePneumatics();
+		
+		
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		char ourSwitchPosition = gameData.charAt(0);
 		char ScalePosition = gameData.charAt(1);
@@ -233,6 +250,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		SpeedModifier = 1;
+		reportBotInfo();
+		
+		safePneumatics();
 	}
 
 
@@ -266,15 +286,20 @@ public class Robot extends TimedRobot {
 				setRight(0);
 			}
 			
-			/*
+			
 			if (stick.getRawButton(1)) {
-				if (solenoid1.get()) {
-					solenoid1.set(false);
-				} else {
+				System.out.println("Toggling Solenoids");
+				if (solenoid0.get()) {
+					solenoid0.set(false);
 					solenoid1.set(true);
+					System.out.println("Pneumatics mode 1");
+				} else {
+					System.out.println("Pneumatics mode 2");
+					solenoid0.set(true);
+					solenoid1.set(false);
 				}
+				Timer.delay(1);
 			}
-			*/
 			
 			if (stick.getRawButton(6)) {
 
@@ -341,7 +366,6 @@ public class Robot extends TimedRobot {
 				}
 
 		    	SpeedModifier = 0.25;
-		    	System.out.println("Test");
 			} else {
 				SpeedModifier = 1;
 
