@@ -13,10 +13,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.Solenoid;
-=======
->>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -39,10 +36,10 @@ public class Robot extends TimedRobot {
 	private SpeedController motor3 = new Talon(3);// Talon on channel 0
 	private SpeedController motor4 = new Talon(4);
 	private Servo servo1 = new Servo(9);
-<<<<<<< HEAD
+
 	private Servo servo2 = new Servo(8);
-=======
->>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
+
+
 	private Joystick stick = new Joystick(0); // initialize the joystick on port
 	//private Joystick stick2 = new Joystick(3);
 	Thread m_visionThread;// 0
@@ -50,15 +47,13 @@ public class Robot extends TimedRobot {
 	double SpeedModifier = 1;
 	double liftSpeedMod;
 	double servo1Angle = 90;
-<<<<<<< HEAD
+
 	double servo2Angle = 180;
 	String startingPosition = "right";
 	//Solenoid solenoid1 = new Solenoid(0);
 	boolean shouldGoSlow = false;
 	boolean shouldGoMedium = false;
-=======
-	String startingPosition = "right";
->>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
+
 
 
 	@Override
@@ -282,7 +277,7 @@ public class Robot extends TimedRobot {
 			*/
 			
 			if (stick.getRawButton(6)) {
-<<<<<<< HEAD
+
 				if (shouldGoSlow) {
 					shouldGoSlow = false;
 					System.out.println("Toggled slow mode to False");
@@ -344,12 +339,12 @@ public class Robot extends TimedRobot {
 				if (!shouldGoMedium) {
 					SpeedModifier = 1;
 				}
-=======
+
 		    	SpeedModifier = 0.25;
 		    	System.out.println("Test");
 			} else {
 				SpeedModifier = 1;
->>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
+
 			}
 
 			//liftSpeedMod = stick2.getRawAxis(3);
@@ -362,7 +357,7 @@ public class Robot extends TimedRobot {
 			if (stick2.getRawAxis(1) > 0.2) {
 				setLift(stick2.getRawAxis(1));
 			}
-<<<<<<< HEAD
+
 			*/
 			
 			if (stick.getPOV() == 180) {
@@ -370,19 +365,19 @@ public class Robot extends TimedRobot {
 				Timer.delay(0.05);
 			}
 			if (stick.getPOV() == 0) {
-=======
+
 			if (stick.getPOV() == 0) {
 				servo1Angle = servo1Angle + 2.5;
 				Timer.delay(0.05);
 			}
 			if (stick.getPOV() == 180) {
->>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
+
 				servo1Angle = servo1Angle - 2.5;
 				Timer.delay(0.05);
 			}
 			
 			if (stick.getPOV() == 90) { //REMOVE THIS
-<<<<<<< HEAD
+
 				servo2Angle = servo2Angle - 2.5;
 				Timer.delay(0.05);
 			}
@@ -390,7 +385,7 @@ public class Robot extends TimedRobot {
 			if (stick.getPOV() == 270) { //REMOVE THIS
 				servo2Angle = servo2Angle + 2.5;
 				Timer.delay(0.05);
-=======
+
 				turnRight();
 				Timer.delay(0.2);
 			}
@@ -398,7 +393,7 @@ public class Robot extends TimedRobot {
 			if (stick.getPOV() == 270) { //REMOVE THIS
 				turnLeft();
 				Timer.delay(0.2);
->>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
+
 			}
 			
 			if (servo1Angle >= 179) {
@@ -407,7 +402,6 @@ public class Robot extends TimedRobot {
 			if (servo1Angle <= 1) {
 				servo1Angle = 2;
 			}
-<<<<<<< HEAD
 			if (servo2Angle >= 359) {
 				servo2Angle = 358;
 			}
@@ -416,10 +410,10 @@ public class Robot extends TimedRobot {
 			}
 			servo1.setAngle(servo1Angle);
 			servo2.setAngle(servo2Angle);
-=======
+
 			
-			servo1.setAngle(servo1Angle);
->>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
+			servo1.setAngle(servo1Angle); 
+		}
 	}
 
 
