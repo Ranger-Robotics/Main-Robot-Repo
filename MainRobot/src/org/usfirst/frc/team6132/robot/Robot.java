@@ -57,6 +57,7 @@ public class Robot extends TimedRobot {
 	boolean shouldGoSlow = false;
 	boolean shouldGoMedium = false;
 =======
+	String startingPosition = "right";
 >>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
 
 
@@ -344,6 +345,10 @@ public class Robot extends TimedRobot {
 					SpeedModifier = 1;
 				}
 =======
+		    	SpeedModifier = 0.25;
+		    	System.out.println("Test");
+			} else {
+				SpeedModifier = 1;
 >>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
 			}
 
@@ -366,6 +371,11 @@ public class Robot extends TimedRobot {
 			}
 			if (stick.getPOV() == 0) {
 =======
+			if (stick.getPOV() == 0) {
+				servo1Angle = servo1Angle + 2.5;
+				Timer.delay(0.05);
+			}
+			if (stick.getPOV() == 180) {
 >>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
 				servo1Angle = servo1Angle - 2.5;
 				Timer.delay(0.05);
@@ -381,6 +391,13 @@ public class Robot extends TimedRobot {
 				servo2Angle = servo2Angle + 2.5;
 				Timer.delay(0.05);
 =======
+				turnRight();
+				Timer.delay(0.2);
+			}
+			
+			if (stick.getPOV() == 270) { //REMOVE THIS
+				turnLeft();
+				Timer.delay(0.2);
 >>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
 			}
 			
@@ -400,6 +417,8 @@ public class Robot extends TimedRobot {
 			servo1.setAngle(servo1Angle);
 			servo2.setAngle(servo2Angle);
 =======
+			
+			servo1.setAngle(servo1Angle);
 >>>>>>> ad97832418263bbc2816c88c187fd9d76a8c4b9a
 	}
 
