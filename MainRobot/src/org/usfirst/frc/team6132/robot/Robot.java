@@ -23,6 +23,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -38,6 +39,8 @@ public class Robot extends TimedRobot {
 	private Servo servo1 = new Servo(9);
 
 	private Servo servo2 = new Servo(8);
+	private static final int kGyroPort = 0;
+	private AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
 
 
 	private Joystick stick = new Joystick(0); // initialize the joystick on port
@@ -50,8 +53,19 @@ public class Robot extends TimedRobot {
 
 	double servo2Angle = 180;
 	String startingPosition = "right";
+	
+	//Grabber Cyclinder 1
 	Solenoid solenoid0 = new Solenoid(0);
 	Solenoid solenoid1 = new Solenoid(1);
+	
+	//Grabber Cyclinder 2
+	Solenoid solenoid2 = new Solenoid(2);
+	Solenoid solenoid3 = new Solenoid(3);
+	
+	//Grabber Extender
+	Solenoid solenoid4 = new Solenoid(4);
+	Solenoid solenoid5 = new Solenoid(5);
+	
 	boolean shouldGoSlow = false;
 	boolean shouldGoMedium = false;
 
@@ -154,6 +168,8 @@ public class Robot extends TimedRobot {
 	void safePneumatics() {
 		solenoid0.set(false);
 		solenoid1.set(true);
+		solenoid2.set(false);
+		solenoid3.set(true);
 		System.out.println("The Pneumatics have been safed.");
 	}
 
@@ -290,15 +306,31 @@ public class Robot extends TimedRobot {
 			if (stick.getRawButton(1)) {
 				System.out.println("Toggling Solenoids");
 				if (solenoid0.get()) {
+					System.out.println("Grabber mode 1");
 					solenoid0.set(false);
 					solenoid1.set(true);
-					System.out.println("Pneumatics mode 1");
+					solenoid2.set(false);
+					solenoid3.set(true);
 				} else {
-					System.out.println("Pneumatics mode 2");
+					System.out.println("Grabber mode 2");
 					solenoid0.set(true);
 					solenoid1.set(false);
+					solenoid2.set(true);
+					solenoid3.set(false);
 				}
 				Timer.delay(1);
+			}
+			
+			if (stick.getRawButton(2)) {
+				if (solenoid4.get()) {
+					System.out.println("Extender mode 1");
+					solenoid4.set(false);
+					solenoid5.set(true);
+				} else {
+					System.out.println("Extender mode 2");
+					solenoid4.set(true);
+					solenoid5.set(false);
+				}
 			}
 			
 			if (stick.getRawButton(6)) {
@@ -414,6 +446,7 @@ public class Robot extends TimedRobot {
 				Timer.delay(0.2);
 			}
 			
+		
 			if (stick.getPOV() == 270) { //REMOVE THIS
 				turnLeft();
 				Timer.delay(0.2);
