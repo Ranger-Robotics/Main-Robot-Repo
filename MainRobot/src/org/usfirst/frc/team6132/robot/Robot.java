@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.Solenoid;
 
 import org.opencv.core.Mat;
@@ -24,6 +25,7 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -39,10 +41,15 @@ public class Robot extends TimedRobot {
 	private Servo servo1 = new Servo(9);
 
 	private Servo servo2 = new Servo(8);
+	private static final int kUltrasonicPort = 0;
+	private static final double kValueToInches = 0.125;
+
 	private static final int kGyroPort = 0;
 	private AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
+	private AnalogInput m_ultrasonic = new AnalogInput(kUltrasonicPort);
 
-
+	
+	
 	private Joystick stick = new Joystick(0); // initialize the joystick on port
 	//private Joystick stick2 = new Joystick(3);
 	Thread m_visionThread;// 0
@@ -403,6 +410,7 @@ public class Robot extends TimedRobot {
 
 			}
 
+			
 			//liftSpeedMod = stick2.getRawAxis(3);
 
 			/*
@@ -453,6 +461,7 @@ public class Robot extends TimedRobot {
 
 			}
 			
+			
 			if (servo1Angle >= 179) {
 				servo1Angle = 178;
 			}
@@ -470,6 +479,17 @@ public class Robot extends TimedRobot {
 
 			
 			servo1.setAngle(servo1Angle); 
+			
+		if (stick.getRawButton(7)) {
+			motor4.set(0.5);
+		} else if (stick.getRawButton(8)) {
+			motor4.set(-0.5);
+		} else {
+			motor4.set(0);
+		}
+		
+		
+		
 		}
 	}
 
