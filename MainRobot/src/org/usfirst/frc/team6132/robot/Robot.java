@@ -42,11 +42,11 @@ public class Robot extends TimedRobot {
 
 	private Servo servo2 = new Servo(8);
 	private static final int kUltrasonicPort = 0;
-	private static final double kValueToInches = 0.125;
+	//private static final double kValueToInches = 0.125;
 
 	private static final int kGyroPort = 0;
-	private AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
-	private AnalogInput m_ultrasonic = new AnalogInput(kUltrasonicPort);
+	//private AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
+	//private AnalogInput m_ultrasonic = new AnalogInput(kUltrasonicPort);
 
 	
 	
