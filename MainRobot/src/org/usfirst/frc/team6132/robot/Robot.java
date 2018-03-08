@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.GenericHID;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -38,27 +40,33 @@ public class Robot extends TimedRobot {
 	private SpeedController motor2 = new Talon(2);
 	private SpeedController motor3 = new Talon(3);// Talon on channel 0
 	private SpeedController motor4 = new Talon(4);
+	private SpeedController motor5 = new Talon(5);
 	private Servo servo1 = new Servo(9);
-
+	
+	
+	static GenericHID.RumbleType RightRumble;
+	static GenericHID.RumbleType LeftRumble;
+	//public static final GenericHID.RumbleType RightRumble;
 	private Servo servo2 = new Servo(8);
 	private static final int kUltrasonicPort = 0;
 	//private static final double kValueToInches = 0.125;
 
 	private static final int kGyroPort = 0;
+	Encoder encoder1 = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	//private AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
 	//private AnalogInput m_ultrasonic = new AnalogInput(kUltrasonicPort);
 
 	
 	
 	private Joystick stick = new Joystick(0); // initialize the joystick on port
-	//private Joystick stick2 = new Joystick(3);
+	private Joystick stick2 = new Joystick(1);
 	Thread m_visionThread;// 0
 	double DZ = .1;
 	double SpeedModifier = 1;
 	double liftSpeedMod;
 	double servo1Angle = 90;
 
-	double servo2Angle = 180;
+	double servo2Angle = 90;
 	String startingPosition = "right";
 	
 	//Grabber Cyclinder 1
@@ -81,6 +89,12 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		
+		encoder1.setMaxPeriod(.1);
+		encoder1.setMinRate(10);
+		encoder1.setDistancePerPulse(5);
+		encoder1.setReverseDirection(true);
+		encoder1.setSamplesToAverage(7);
+			
 			m_visionThread = new Thread(() -> {
 				// Get the UsbCamera from CameraServer
 				UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
@@ -117,12 +131,13 @@ public class Robot extends TimedRobot {
 			});
 			m_visionThread.setDaemon(true);
 			m_visionThread.start();
+			
 	}
 	
 	void turnLeft() {
 		setLeft(-0.3);
 		setRight(-0.3);
-		Timer.delay(0.9);
+		Timer.delay(1.95);
 		setLeft(0);
 		setRight(0);
 	}
@@ -130,13 +145,13 @@ public class Robot extends TimedRobot {
 	void turnRight() {
 		setLeft(0.3);
 		setRight(0.3);
-		Timer.delay(0.73);
+		Timer.delay(1.16);
 		setLeft(0);
 		setRight(0);
 	}
 
 	void setLeft(double value) {
-		value = value * 0.846;
+		value = value * 0.84; //Was 0.846
 		motor0.set(value);
 		motor1.set(value);
 	}
@@ -164,9 +179,11 @@ public class Robot extends TimedRobot {
 
 	void setLift(double value) {
 		motor4.set(value);
+		motor5.set(value);
 	}
 	
 	void reportBotInfo() {
+		System.out.println(" ");
 		System.out.println("Bot Status Info");
 		System.out.println("====================");
 		System.out.println("Starting Position: " + startingPosition);
@@ -174,10 +191,34 @@ public class Robot extends TimedRobot {
 	
 	void safePneumatics() {
 		solenoid0.set(false);
-		solenoid1.set(true);
+		solenoid1.set(false);
 		solenoid2.set(false);
-		solenoid3.set(true);
+		solenoid3.set(false);
 		System.out.println("The Pneumatics have been safed.");
+	}
+	
+	void closeGrabber() {
+		solenoid0.set(true);
+		solenoid1.set(false);
+		System.out.println("Closing Grabber");
+	}
+	
+	void openGrabber() {
+		solenoid0.set(false);
+		solenoid1.set(true);
+		System.out.println("Opening Grabber");
+	}
+	
+	void extendGrabber() {
+		solenoid2.set(true);
+		solenoid3.set(true);
+		System.out.println("Extending Grabber");
+	}
+	
+	void retractGrabber() {
+		solenoid2.set(false);
+		solenoid3.set(false);
+		System.out.println("Retracting Grabber");
 	}
 
 
@@ -203,19 +244,51 @@ public class Robot extends TimedRobot {
 		char ScalePosition = gameData.charAt(1);
 		
 		if (startingPosition == "left") {
-			if(ourSwitchPosition == 'L') { //The bot tries to go for our Scale.
-				goForward(4.44, 0.3);
+			if(ourSwitchPosition == 'L') { //The bot tries to go for our Switch.
+				closeGrabber();
+				Timer.delay(1);
+				goForward(1.68, 0.6);
+				Timer.delay(1.5);
 				turnRight();
+				Timer.delay(0.5);
+				setLift(-0.75);
+				Timer.delay(4.5);
+				setLift(0);
+				goForward(0.2, 0.3);
+				extendGrabber();
+				Timer.delay(1.5);
+				openGrabber();
 			}
 			
 			if (ourSwitchPosition == 'R') {
 				
 				if (ScalePosition == 'L') { //If our switch is on the wrong side, try to go for the switch
-					goForward(8.562857, 0.3); //Adjust timing to get to scale, this is set for switch
+					//Adjust timing to get to scale, this is set for switch
+					
+					closeGrabber();
+					Timer.delay(1);
+					goForward(3.44, 0.6);
+					Timer.delay(1.5);
 					turnRight();
+					Timer.delay(0.5);
+					setLift(-1);
+					Timer.delay(6.5);
+					setLift(0);
+					goForward(0.2, 0.3);
+					extendGrabber();
+					Timer.delay(1.5);
+					openGrabber();
 				
 				} else if (ScalePosition == 'R') { //If both the switch and the scale are wrong, go straight
-					goForward(4.44, 0.3);
+					closeGrabber();
+					Timer.delay(1);
+					Timer.delay(0.5);
+					setLift(-0.75);
+					Timer.delay(4.5);
+					setLift(0);
+					goForward(1.68, 0.6);
+					Timer.delay(1.5);
+					extendGrabber();
 				}
 				
 				
@@ -223,45 +296,70 @@ public class Robot extends TimedRobot {
 		}
 		
 		if (startingPosition == "center") {
-			goForward(4.44, 0.3); // Just go straight accross the autoline
+			closeGrabber();
+			Timer.delay(1);
+			Timer.delay(0.5);
+			setLift(-0.75);
+			Timer.delay(4.5);
+			setLift(0);
+			goForward(1.68, 0.6); // Just go straight accross the autoline
+			Timer.delay(1.5);
+			extendGrabber();
 		}
 		
 		
 		if (startingPosition == "right") {
 			if (ourSwitchPosition == 'R') {
-				goForward(4.44, 0.3);
+				closeGrabber();
+				Timer.delay(1);
+				goForward(1.68, 0.6);
+				Timer.delay(1.5);
 				turnLeft();
+				Timer.delay(0.5);
+				setLift(-0.75);
+				Timer.delay(4.5);
+				setLift(0);
+				goForward(0.2, 0.3);
+				extendGrabber();
+				Timer.delay(1.5);
+				openGrabber();
 			}
 			
 			if (ourSwitchPosition == 'L') {
 				if (ScalePosition == 'R') {
-					goForward(8.562857, 0.3);
+					closeGrabber();
+					Timer.delay(1);
+					goForward(3.24, 0.6);
+					Timer.delay(1.5);
 					turnLeft();
+					Timer.delay(0.5);
+					setLift(-1);
+					Timer.delay(5.5);
+					setLift(0);
+					goForward(0.2, 0.3);
+					extendGrabber();
+					Timer.delay(1.5);
+					openGrabber();
 				}
 				
 				if (ScalePosition == 'L') {
-					goForward(4.44, 0.3);
+					closeGrabber();
+					Timer.delay(1);
+					Timer.delay(0.5);
+					setLift(-0.75);
+					Timer.delay(4.5);
+					setLift(0);
+					goForward(1.68, 0.6);
+					Timer.delay(1.5);
+					extendGrabber();
 				}
 			}
 			
 			
 			
 		}
-
-		/* Old Auto Code
-		if(gameData.charAt(0) == 'L') {
-			double autoModeSpeed = 0.3;
-			setLeft(autoModeSpeed);
-			setRight(-autoModeSpeed);
-			Timer.delay(4.44);
-			setLeft(0);
-			setRight(0);
-			Timer.delay(1);
-			turnRight();
-		}
-		*/
 		
-		
+		System.out.println("Autonomous mode has finished.");
 	}
 
 
@@ -272,6 +370,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		System.out.println("Teleop has started.");
 		SpeedModifier = 1;
 		reportBotInfo();
 		
@@ -282,7 +381,60 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-
+			
+			if (stick.getPOV() == 270) {
+				servo1Angle = servo1Angle + 7.5;
+				servo1.setAngle(servo1Angle);
+				Timer.delay(0.05);
+				servo1Angle = 90;
+				servo1.setAngle(servo1Angle);
+				System.out.println("Camera Left");
+				
+			}
+			if (stick.getPOV() == 90) {
+	
+				servo1Angle = servo1Angle - 15.5;
+				servo1.setAngle(servo1Angle);
+				Timer.delay(0.05);
+				servo1Angle = 90;
+				servo1.setAngle(servo1Angle);
+				System.out.println("Camera Right");
+			}
+			
+			if (stick.getPOV() == 0) { //REMOVE THIS
+	
+				servo2Angle = servo2Angle - 10.5;
+				servo2.setAngle(servo2Angle);
+				Timer.delay(0.05);
+				servo2Angle = 90;
+				servo2.setAngle(servo2Angle);
+				System.out.println("Camera Up");
+			}
+			
+			if (stick.getPOV() == 180) { //REMOVE THIS
+				servo2Angle = servo2Angle + 7.5;
+				servo2.setAngle(servo2Angle);
+				Timer.delay(0.05);
+				servo2Angle = 90;
+				servo2.setAngle(servo2Angle);
+				System.out.println("Camera Down");
+			
+			}
+			
+			if (servo1Angle >= 179) {
+				servo1Angle = 178;
+			}
+			if (servo1Angle <= 1) {
+				servo1Angle = 2;
+			}
+			if (servo2Angle >= 179) {
+				servo2Angle = 178;
+			}
+			if (servo2Angle <= 1) {
+				servo2Angle = 2;
+			}
+			servo1.setAngle(servo1Angle);
+			servo2.setAngle(servo2Angle);
 
 			if (stick.getY() < -DZ) {
 				setLeft(-stick.getY()*SpeedModifier);
@@ -316,28 +468,53 @@ public class Robot extends TimedRobot {
 					System.out.println("Grabber mode 1");
 					solenoid0.set(false);
 					solenoid1.set(true);
-					solenoid2.set(false);
-					solenoid3.set(true);
 				} else {
 					System.out.println("Grabber mode 2");
 					solenoid0.set(true);
 					solenoid1.set(false);
-					solenoid2.set(true);
-					solenoid3.set(false);
 				}
-				Timer.delay(1);
+				Timer.delay(0.3);
 			}
 			
 			if (stick.getRawButton(2)) {
-				if (solenoid4.get()) {
+				if (solenoid2.get()) {
 					System.out.println("Extender mode 1");
-					solenoid4.set(false);
-					solenoid5.set(true);
+					solenoid2.set(false);
+					solenoid3.set(false);
 				} else {
 					System.out.println("Extender mode 2");
-					solenoid4.set(true);
-					solenoid5.set(false);
+					solenoid2.set(true);
+					solenoid3.set(true);
 				}
+				Timer.delay(0.3);
+			}
+			
+	//secondJoystick
+			if (stick2.getRawButton(1)) {
+				System.out.println("Toggling Solenoids");
+				if (solenoid0.get()) {
+					System.out.println("Grabber mode 1");
+					solenoid0.set(false);
+					solenoid1.set(true);
+				} else {
+					System.out.println("Grabber mode 2");
+					solenoid0.set(true);
+					solenoid1.set(false);
+				}
+				Timer.delay(0.3);
+			}
+			
+			if (stick2.getRawButton(2)) {
+				if (solenoid2.get()) {
+					System.out.println("Extender mode 1");
+					solenoid2.set(false);
+					solenoid3.set(false);
+				} else {
+					System.out.println("Extender mode 2");
+					solenoid2.set(true);
+					solenoid3.set(true);
+				}
+				Timer.delay(0.3);
 			}
 			
 			if (stick.getRawButton(6)) {
@@ -345,9 +522,18 @@ public class Robot extends TimedRobot {
 				if (shouldGoSlow) {
 					shouldGoSlow = false;
 					System.out.println("Toggled slow mode to False");
+					stick.setRumble(RightRumble, 1);
+					Timer.delay(0.2);
+					stick.setRumble(RightRumble, 0);
+					
+				
 				} else {
 					shouldGoSlow = true;
 					System.out.println("Toggled slow mode to True");
+					stick.setRumble(RightRumble, 1);
+					Timer.delay(0.4);
+					stick.setRumble(RightRumble, 0);
+					
 				}
 		    	Timer.delay(0.2);
 		    	if (stick.getRawButton(3) && stick.getRawButton(4)) {
@@ -379,9 +565,16 @@ public class Robot extends TimedRobot {
 				if (shouldGoMedium)  {
 					shouldGoMedium = false;
 					System.out.println("Toggled Medium Mode To False");
+					//stick.setRumble(r, .5);
+					stick.setRumble(LeftRumble, 1);
+					Timer.delay(0.2);
+					stick.setRumble(LeftRumble, 0);
 				} else {
 					shouldGoMedium = true;
 					System.out.println("Toggled Medium Mode To True");
+					stick.setRumble(LeftRumble, 1);
+					Timer.delay(0.4);
+					stick.setRumble(LeftRumble, 0);
 				}
 				Timer.delay(0.2);
 			}
@@ -403,95 +596,55 @@ public class Robot extends TimedRobot {
 				if (!shouldGoMedium) {
 					SpeedModifier = 1;
 				}
-
-		    	SpeedModifier = 0.25;
-			} else {
-				SpeedModifier = 1;
-
+			}
+			
+			if (stick.getRawButton(4)) {
+				turnRight();
+				
+				/*
+				encoder1.reset();
+				while (encoder1.get() < 50) {
+					motor4.set(0.25);
+				}
+				motor4.set(0);
+				*/ 
 			}
 
 			
 			//liftSpeedMod = stick2.getRawAxis(3);
 
-			/*
-			if (stick2.getRawAxis(1) < -0.2) {
-				setLift(stick2.getRawAxis(1));
+			if (stick2.getRawAxis(2) > 0.6){
+				stick.setRumble(RightRumble, stick2.getRawAxis(3));
+				
 			}
-
-			if (stick2.getRawAxis(1) > 0.2) {
-				setLift(stick2.getRawAxis(1));
-			}
-
-			*/
-			
-			if (stick.getPOV() == 180) {
-				servo1Angle = servo1Angle + 2.5;
-				Timer.delay(0.05);
-			}
-			if (stick.getPOV() == 0) {
-
-			if (stick.getPOV() == 0) {
-				servo1Angle = servo1Angle + 2.5;
-				Timer.delay(0.05);
-			}
-			if (stick.getPOV() == 180) {
-
-				servo1Angle = servo1Angle - 2.5;
-				Timer.delay(0.05);
-			}
-			
-			if (stick.getPOV() == 90) { //REMOVE THIS
-
-				servo2Angle = servo2Angle - 2.5;
-				Timer.delay(0.05);
-			}
-			
-			if (stick.getPOV() == 270) { //REMOVE THIS
-				servo2Angle = servo2Angle + 2.5;
-				Timer.delay(0.05);
-
-				turnRight();
-				Timer.delay(0.2);
-			}
-			
-		
-			if (stick.getPOV() == 270) { //REMOVE THIS
-				turnLeft();
-				Timer.delay(0.2);
-
+			if (stick2.getRawAxis(2) < 0.4){
+				stick.setRumble(RightRumble, stick2.getRawAxis(2));
+				
 			}
 			
 			
-			if (servo1Angle >= 179) {
-				servo1Angle = 178;
-			}
-			if (servo1Angle <= 1) {
-				servo1Angle = 2;
-			}
-			if (servo2Angle >= 359) {
-				servo2Angle = 358;
-			}
-			if (servo2Angle <= 1) {
-				servo2Angle = 2;
-			}
-			servo1.setAngle(servo1Angle);
-			servo2.setAngle(servo2Angle);
+			
+			
 
 			
-			servo1.setAngle(servo1Angle); 
 			
 		if (stick.getRawButton(7)) {
-			motor4.set(0.5);
+			setLift(stick2.getRawAxis(3) + 1);
 		} else if (stick.getRawButton(8)) {
-			motor4.set(-0.5);
+			setLift(-(stick2.getRawAxis(3) + 1));
 		} else {
-			motor4.set(0);
+			if (stick2.getRawAxis(1) > 0.3) {
+				setLift(stick2.getRawAxis(3) + 1);	
+			} else if (stick2.getRawAxis(1) < -0.3) {
+				setLift(-(stick2.getRawAxis(3) + 1));
+			} else {
+				setLift(0);
+			}
 		}
 		
 		
 		
 		}
-	}
 
 
 	@Override
