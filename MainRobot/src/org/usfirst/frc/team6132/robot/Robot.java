@@ -243,120 +243,132 @@ public class Robot extends TimedRobot {
 		char ourSwitchPosition = gameData.charAt(0);
 		char ScalePosition = gameData.charAt(1);
 		
-		if (startingPosition == "left") {
-			if(ourSwitchPosition == 'L') { //The bot tries to go for our Switch.
-				closeGrabber();
-				Timer.delay(1);
-				goForward(1.68, 0.6);
-				Timer.delay(1.5);
-				turnRight();
-				Timer.delay(0.5);
-				setLift(-0.75);
-				Timer.delay(4.5);
-				setLift(0);
-				goForward(0.2, 0.3);
-				extendGrabber();
-				Timer.delay(1.5);
-				openGrabber();
-			}
-			
-			if (ourSwitchPosition == 'R') {
-				
-				if (ScalePosition == 'L') { //If our switch is on the wrong side, try to go for the switch
-					//Adjust timing to get to scale, this is set for switch
-					
+		if (gameData != null) {
+			if (startingPosition == "left") {
+				if(ourSwitchPosition == 'L') { //The bot tries to go for our Switch.
 					closeGrabber();
 					Timer.delay(1);
-					goForward(3.44, 0.6);
+					goForward(1.68, 0.6);
 					Timer.delay(1.5);
 					turnRight();
 					Timer.delay(0.5);
-					setLift(-1);
-					Timer.delay(6.5);
+					setLift(-0.75);
+					Timer.delay(4.5);
 					setLift(0);
 					goForward(0.2, 0.3);
 					extendGrabber();
 					Timer.delay(1.5);
 					openGrabber();
+				}
 				
-				} else if (ScalePosition == 'R') { //If both the switch and the scale are wrong, go straight
+				if (ourSwitchPosition == 'R') {
+					
+					if (ScalePosition == 'L') { //If our switch is on the wrong side, try to go for the switch
+						//Adjust timing to get to scale, this is set for switch
+						
+						closeGrabber();
+						Timer.delay(1);
+						goForward(3.44, 0.6);
+						Timer.delay(1.5);
+						turnRight();
+						Timer.delay(0.5);
+						setLift(-1);
+						Timer.delay(6.5);
+						setLift(0);
+						goForward(0.2, 0.3);
+						extendGrabber();
+						Timer.delay(1.5);
+						openGrabber();
+					
+					} else if (ScalePosition == 'R') { //If both the switch and the scale are wrong, go straight
+						closeGrabber();
+						Timer.delay(1);
+						Timer.delay(0.5);
+						setLift(-0.75);
+						Timer.delay(4.5);
+						setLift(0);
+						goForward(1.68, 0.6);
+						Timer.delay(1.5);
+						extendGrabber();
+					}
+					
+					
+				}
+			}
+			
+			if (startingPosition == "center") {
+				closeGrabber();
+				Timer.delay(1);
+				Timer.delay(0.5);
+				setLift(-0.75);
+				Timer.delay(4.5);
+				setLift(0);
+				goForward(1.68, 0.6); // Just go straight accross the autoline
+				Timer.delay(1.5);
+				extendGrabber();
+			}
+			
+			
+			if (startingPosition == "right") {
+				if (ourSwitchPosition == 'R') {
 					closeGrabber();
 					Timer.delay(1);
+					goForward(1.68, 0.6);
+					Timer.delay(1.5);
+					turnLeft();
 					Timer.delay(0.5);
 					setLift(-0.75);
 					Timer.delay(4.5);
 					setLift(0);
-					goForward(1.68, 0.6);
-					Timer.delay(1.5);
+					goForward(0.2, 0.3);
 					extendGrabber();
+					Timer.delay(1.5);
+					openGrabber();
+				}
+				
+				if (ourSwitchPosition == 'L') {
+					if (ScalePosition == 'R') {
+						closeGrabber();
+						Timer.delay(1);
+						goForward(3.24, 0.6);
+						Timer.delay(1.5);
+						turnLeft();
+						Timer.delay(0.5);
+						setLift(-1);
+						Timer.delay(5.5);
+						setLift(0);
+						goForward(0.2, 0.3);
+						extendGrabber();
+						Timer.delay(1.5);
+						openGrabber();
+					}
+					
+					if (ScalePosition == 'L') {
+						closeGrabber();
+						Timer.delay(1);
+						Timer.delay(0.5);
+						setLift(-0.75);
+						Timer.delay(4.5);
+						setLift(0);
+						goForward(1.68, 0.6);
+						Timer.delay(1.5);
+						extendGrabber();
+					}
 				}
 				
 				
+				
 			}
-		}
-		
-		if (startingPosition == "center") {
+		} else {
 			closeGrabber();
 			Timer.delay(1);
 			Timer.delay(0.5);
 			setLift(-0.75);
 			Timer.delay(4.5);
 			setLift(0);
-			goForward(1.68, 0.6); // Just go straight accross the autoline
+			goForward(1.68, 0.6);
 			Timer.delay(1.5);
 			extendGrabber();
-		}
-		
-		
-		if (startingPosition == "right") {
-			if (ourSwitchPosition == 'R') {
-				closeGrabber();
-				Timer.delay(1);
-				goForward(1.68, 0.6);
-				Timer.delay(1.5);
-				turnLeft();
-				Timer.delay(0.5);
-				setLift(-0.75);
-				Timer.delay(4.5);
-				setLift(0);
-				goForward(0.2, 0.3);
-				extendGrabber();
-				Timer.delay(1.5);
-				openGrabber();
-			}
-			
-			if (ourSwitchPosition == 'L') {
-				if (ScalePosition == 'R') {
-					closeGrabber();
-					Timer.delay(1);
-					goForward(3.24, 0.6);
-					Timer.delay(1.5);
-					turnLeft();
-					Timer.delay(0.5);
-					setLift(-1);
-					Timer.delay(5.5);
-					setLift(0);
-					goForward(0.2, 0.3);
-					extendGrabber();
-					Timer.delay(1.5);
-					openGrabber();
-				}
-				
-				if (ScalePosition == 'L') {
-					closeGrabber();
-					Timer.delay(1);
-					Timer.delay(0.5);
-					setLift(-0.75);
-					Timer.delay(4.5);
-					setLift(0);
-					goForward(1.68, 0.6);
-					Timer.delay(1.5);
-					extendGrabber();
-				}
-			}
-			
-			
-			
 		}
 		
 		System.out.println("Autonomous mode has finished.");
