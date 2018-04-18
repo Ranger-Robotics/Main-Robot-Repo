@@ -67,7 +67,8 @@ public class Robot extends TimedRobot {
 	double servo1Angle = 90;
 
 	double servo2Angle = 90;
-	String startingPosition = "right";
+	//CHANGE THIS TO CHANGE STARTING POSITION
+	String startingPosition = "left"; //ah24 or AH246
 	
 	//Grabber Cyclinder 1
 	Solenoid solenoid0 = new Solenoid(0);
@@ -135,12 +136,13 @@ public class Robot extends TimedRobot {
 	}
 	
 	void turnLeft() {
-		setLeft(-0.3);
-		setRight(-0.3);
-		Timer.delay(1.95);
+		setLeft(-0.6);
+		setRight(-0.6);
+		Timer.delay(1.4);//1.94 but less umpj
 		setLeft(0);
 		setRight(0);
 	}
+	// Ignore this comment.
 
 	void turnRight() {
 		setLeft(0.3);
@@ -151,7 +153,7 @@ public class Robot extends TimedRobot {
 	}
 
 	void setLeft(double value) {
-		value = value * 0.84; //Was 0.846
+		value = value * 0.846; //Was 0.846
 		motor0.set(value);
 		motor1.set(value);
 	}
@@ -238,16 +240,20 @@ public class Robot extends TimedRobot {
 		reportBotInfo();
 		safePneumatics();
 		
-		
+		/*
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		char ourSwitchPosition = gameData.charAt(0);
 		char ScalePosition = gameData.charAt(1);
 		
-		if (startingPosition == "left") {
+		if (startingPosition == "right") {
 			if(ourSwitchPosition == 'L') { //The bot tries to go for our Switch.
 				closeGrabber();
 				Timer.delay(1);
-				goForward(1.68, 0.6);
+				setLeft(0.6);
+				setRight(-0.61);
+				Timer.delay(1.68);
+				setLeft(0);
+				setRight(0);
 				Timer.delay(1.5);
 				turnRight();
 				Timer.delay(0.5);
@@ -267,7 +273,11 @@ public class Robot extends TimedRobot {
 					
 					closeGrabber();
 					Timer.delay(1);
-					goForward(3.44, 0.6);
+					setLeft(0.6);
+					setRight(-0.605);
+					Timer.delay(3.24);
+					setLeft(0);
+					setRight(0);
 					Timer.delay(1.5);
 					turnRight();
 					Timer.delay(0.5);
@@ -307,12 +317,16 @@ public class Robot extends TimedRobot {
 			extendGrabber();
 		}
 		
-		
-		if (startingPosition == "right") {
+		//
+		if (startingPosition == "left") {
 			if (ourSwitchPosition == 'R') {
 				closeGrabber();
 				Timer.delay(1);
-				goForward(1.68, 0.6);
+				setLeft(0.61);
+				setRight(-0.6);
+				Timer.delay(1.68);
+				setLeft(0);
+				setRight(0);
 				Timer.delay(1.5);
 				turnLeft();
 				Timer.delay(0.5);
@@ -329,7 +343,11 @@ public class Robot extends TimedRobot {
 				if (ScalePosition == 'R') {
 					closeGrabber();
 					Timer.delay(1);
-					goForward(3.24, 0.6);
+					setLeft(0.605);
+					setRight(-0.6);
+					Timer.delay(3.24); //This was 3.24 before
+					setLeft(0);
+					setRight(0);
 					Timer.delay(1.5);
 					turnLeft();
 					Timer.delay(0.5);
@@ -357,9 +375,25 @@ public class Robot extends TimedRobot {
 			
 			
 			
-		}
+		}//
 		
 		System.out.println("Autonomous mode has finished.");
+		*/
+		//Brendino auto
+		closeGrabber();
+		Timer.delay(1);
+		goForward(0.2, 0.3);
+		goForward(1.68, 0.6);
+		setLeft(0);
+		setRight(0);
+		Timer.delay(1);
+		motor2.set(-.5);
+		motor3.set(-.5);
+		Timer.delay(.5);
+		motor3.set(0);
+		motor3.set(0);
+		
+		//Just goes straight
 	}
 
 
